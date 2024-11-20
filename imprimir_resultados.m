@@ -1,4 +1,4 @@
-function [] = imprimir_resultados(subbanda,nivel,entropias, max_entropia, RH, std, SZ, SZ_RH)
+function [] = imprimir_resultados(subbanda,nivel,Hz1, std)
 
     for i = 1:4
 
@@ -13,11 +13,7 @@ function [] = imprimir_resultados(subbanda,nivel,entropias, max_entropia, RH, st
                 fprintf('  Subbanda %d:\n', i);
         end
 
-        fprintf('    Entropía: %.4f\n', entropias(i));
-        fprintf('    Max entropía: %.4f\n', max_entropia(i));
-        fprintf('    RH: %.4f\n', RH(i));
-        fprintf('    SZ: %d\n', SZ(i));
-        fprintf('    SZ * RH: %.4f\n', SZ_RH(i));
+        fprintf('    Entropia Z %.4f\n', Hz1(i));
         fprintf('    Desviación estandar:  %.4f\n\n', std(i));
     end
 

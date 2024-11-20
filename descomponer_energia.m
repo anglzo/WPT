@@ -1,7 +1,6 @@
-function [hz,std, wav_coef] = descomponer_imprimir(img, archivos, num_img, lScheme, nivel, mapa1, mapa2)
+function [ex, wav_coef] = descomponer_energia(img, archivos, num_img, lScheme, nivel, mapa1, mapa2)
     
-    hz = {};
-    std= {};
+    ex = {};
     % Realizar la primera descomposición
     [LL, LH, HL, HH] = lwt2(img, LiftingScheme=lScheme, Level=1, Int2Int=true);
     wav_coef = cell(1,4);
@@ -12,13 +11,8 @@ function [hz,std, wav_coef] = descomponer_imprimir(img, archivos, num_img, lSche
 
     
     % Calcular y mostrar entropías para el nivel 1
-    [hz1, std1] = calcular_entropias(wav_coef);
-    hz{1,1} = hz1;
-    std{1,1} = std1;
-    
-    disp(['Procesando imagen: ', archivos(num_img).name]);
-    fprintf('Nivel %d:', 1);
-    imprimir_resultados(1, 1,hz1, std1);
+    [ex1] = calcular_energias(wav_coef);
+    ex{1,1} = ex1;
 
     % Si hay descomposición para el segundo nivel, proceder
     if nivel >= 2
@@ -34,11 +28,11 @@ function [hz,std, wav_coef] = descomponer_imprimir(img, archivos, num_img, lSche
                 wav_coef{1,k} = wav_coef1;
 
                 % Calcular y mostrar entropías para el nivel 2
-                fprintf('Nivel %d - Subbanda %d:\n', 2, k);
-                [hz2, std2] = calcular_entropias(wav_coef1);
-                hz{2,k} = hz2;
-                std{2,k} = std2;
-                imprimir_resultados(k, 2, hz2, std2);
+               
+                [ex2] = calcular_energias(wav_coef1);
+                ex{2,k} = ex2;
+            
+   
             end
         end
     end
@@ -61,11 +55,10 @@ function [hz,std, wav_coef] = descomponer_imprimir(img, archivos, num_img, lSche
                         wav_coef2{1,kk} = wav_coef3;
 
                         % Calcular y mostrar entropías para el nivel 3
-                        fprintf('Nivel %d - Subbanda %d.%d:\n', 3, k, kk);
-                        [hz3, std3] = calcular_entropias(wav_coef3);
-                        hz{3,k}{kk} = hz3;
-                        std{3,k}{kk} = std3;
-                        imprimir_resultados([k, kk], 3, hz3, std3);
+                        
+                        [ex3] = calcular_energias(wav_coef3);
+                        ex{3,k}{kk} = ex3;
+                       
                     end
                 end
                 if sum(mapa2(k,:)) ~= 0
