@@ -60,7 +60,7 @@ function [mapa_optimo_nivel1, mapa_optimo_nivel2] = calcular_mapa_energia(ex, ma
         if mapa1(k) == 1
             % Calcula el parámetro para la subbanda de Nivel 1
             energia_nivel1 = ex{1, 1}(k);
-            
+
             % Suma de parámetros de subbandas hijas en Nivel 2
             energia_hijas_nivel2 = 0;
             for kk = 1:4
@@ -69,7 +69,7 @@ function [mapa_optimo_nivel1, mapa_optimo_nivel2] = calcular_mapa_energia(ex, ma
                  r = energia_nivel1/energia_hijas_nivel2;
 
             % Criterio de poda para cada subbanda de Nivel 1 y sus hijas de Nivel 2
-            if r >= 0.7
+            if r >= 0.8
                 mapa_optimo_nivel1(k) = 0;  % Poda en el mapa del nivel 1 para la subbanda k
             end
         end
@@ -82,7 +82,7 @@ function [mapa_optimo_nivel1, mapa_optimo_nivel2] = calcular_mapa_energia(ex, ma
                 if mapa2(k, kk) == 1
                     % Calcula el parámetro para la subbanda de Nivel 2
                     energia_nivel2 = ex{2, k}(kk);
-                    
+
                     % Suma de parámetros de subbandas hijas en Nivel 3
                     energia_hijas_nivel3 = 0;
                     for kkk = 1:4
@@ -91,7 +91,7 @@ function [mapa_optimo_nivel1, mapa_optimo_nivel2] = calcular_mapa_energia(ex, ma
                      r = energia_nivel2/energia_hijas_nivel3;
 
                     % Criterio de poda para cada subbanda de Nivel 2 y sus hijas de Nivel 3
-                    if r >= 0.7
+                    if r >= 0.8
                         mapa_optimo_nivel2(k, kk) = 0;  % Poda en el mapa del nivel 2 para la subbanda k, kk
                     end
                 end

@@ -1,5 +1,5 @@
 
-function [wav_coef_mod,imgSecretaF, imgSecretaC, bitsImagenSecreta, numBits]= incrustar_imagen_v2(wav_coef, imgSecreta, subbandasSeleccionada)
+function [wav_coef_mod,imgSecretaF, imgSecretaC, bitsImagenSecreta, numBits]= incrustar_imagen_v4(wav_coef, imgSecreta, subbandasSeleccionada)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% INCRUSTACIÓN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 %esta función tomaría como parámetros de entrada el conjunto de
 %coeficientes que se va a modificar, la sección de la imagen secreta que se
@@ -29,15 +29,6 @@ coefVector = coefVector';
 
 numBits = ceil(((numBitsCoef*cantidadBitsImagenSecreta)^2)/(cantidadBitsImagenPortada^2));
 
-%vector con el conjunto de coeficientes wavelet
-
-%vector de bists que representa parte de la información secreta 
-cant_infSecre = 20; %tamaño del vector de bits que representa la información secreta
-bin_secre_O = randsrc(1,cant_infSecre,[0 1]); 
-
-%número de bits menos significativos que se van a modificar en este grupo
-%de coeficientes 
-nlsb = 2; 
 
 %% convertir a binario
 
@@ -80,7 +71,16 @@ bits_est = reshape(coef_bin_stego(:,2:end)',numel(coef_bin_stego(:,2:end)),1);
 coef_est = bit2int(bits_est,numBitsCoef,true);
 
 coef_est = (signo_est.*coef_est)'; %recupera los valores positivos y negativos
-wav_coef_mod{subbandasSeleccionada(1)}{subbandasSeleccionada(2)}{subbandasSeleccionada(3)} = reshape(coef_est, coefSize);
+
+if length(subbandasSeleccionada) == 1
+    wav_coef_mod{subbandasSeleccionada(1)} = reshape(coef_est, coefSize);
+elseif length(subbandasSeleccionada) == 2
+    wav_coef_mod{subbandasSeleccionada(1)}{subbandasSeleccionada(2)} = reshape(coef_est, coefSize);
+elseif length(subbandasSeleccionada) == 3
+    wav_coef_mod{subbandasSeleccionada(1)}{subbandasSeleccionada(2)}{subbandasSeleccionada(3)} = reshape(coef_est, coefSize);
+end
+
+%wav_coef_mod{subbandasSeleccionada(1)}{subbandasSeleccionada(2)}{subbandasSeleccionada(3)} = reshape(coef_est, coefSize);
 
 
 % %% proceso de recuperación de los bits de la información secreta

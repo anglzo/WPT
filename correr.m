@@ -69,18 +69,19 @@ dimen_en = length(bpn);
 for i = 1 : dimen
     isubbanda = bp(2,i);
     subbanda = indices_sub(isubbanda,wav_optimo,map_n1,map_n2);
+
     [wav_coef_mod,imgSecretaF, imgSecretaC, bitsimg, numBits] = incrustar_imagen_v4(wav_optimo, img_msj, subbanda);
     if i == 1
         break
     end
 end
 
-% %incrustación energia
-% for i = 1 : dimen_en
+%incrustación energia
+% for i = 3 : dimen_en
 %     isubbanda = bpn(2,i);
 %     subbanda = indices_sub(isubbanda,wav_en_opt,map_en_1,map_en_2);
 %     [wav_coef_mod,imgSecretaF, imgSecretaC, bitsimg, numBits] = incrustar_imagen_v4(wav_en_opt, img_msj, subbanda);
-%     if i == 1
+%     if i == 3
 %         break
 %     end
 % end
