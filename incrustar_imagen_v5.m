@@ -1,4 +1,4 @@
-function [wav_coef_mod] = incrustar_imagen_v5(wav_coef, infSecre, subbandasSeleccionada, nlsb)
+function [wav_coef_mod, bitsincrus] = incrustar_imagen_v5(wav_coef, infSecre, subbandasSeleccionada, nlsb)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%% INCRUSTACIÓN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     % Esta función toma como parámetros de entrada el conjunto de
     % coeficientes que se va a modificar, la sección de la imagen secreta que se
@@ -48,6 +48,7 @@ function [wav_coef_mod] = incrustar_imagen_v5(wav_coef, infSecre, subbandasSelec
         bin_secre = reshape(bin_secre,nlsb,length(bin_secre)/nlsb)';
 
     end
+    bitsincrus = bin_secre;
    
     coef_bin_stego = coef_bin;
     coef_bin_stego(:, end - nlsb + 1:end) = bin_secre;
@@ -57,7 +58,7 @@ function [wav_coef_mod] = incrustar_imagen_v5(wav_coef, infSecre, subbandasSelec
     bits_est = reshape(coef_bin_stego(:, 2:end)', numel(coef_bin_stego(:, 2:end)), 1);
     coef_est = bit2int(bits_est, numBitsCoef, true);
     coef_est = (signo_est .* coef_est)'; % Recupera los valores positivos y negativos
-    
+
    if length(subbandasSeleccionada) == 1
     wav_coef_mod{subbandasSeleccionada(1)} = reshape(coef_est, coefSize);
 elseif length(subbandasSeleccionada) == 2

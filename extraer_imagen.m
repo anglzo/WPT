@@ -1,7 +1,7 @@
-function img_secreta_extraida = extraer_imagen(wav_coef_rx, vec_sub, imgSecretaF, imgSecretaC, bitsimg, numBits)
+function [img_secreta_extraida, bits_rx] = extraer_imagen(wav_coef_rx, vec_sub, imgSecretaF, imgSecretaC, bitsimg, numBits)
 
 numBitsCoef = 16;
-img_est = [];
+bits_rx = [];
 
 for i= 1:length(numBits)
     subbanda = vec_sub{i};
@@ -15,8 +15,10 @@ for i= 1:length(numBits)
         bits_recp = reshape(bits_recp,numBitsCoef,[])'; %se transforma en una matriz de m filas (# coeficientes) y numbits columnas
         
         bin_secre_recp = bits_recp(:,end-numBits(i)+1:end); % recupero las últimas columnas que se modificaron
+        
+        bin_secre_recp = reshape(bin_secre_recp',numel(bin_secre_recp),1)';
        
-        img_est = [img_est ; bin_secre_recp];
+        bits_rx = [bits_rx bin_secre_recp];
     end
 
 
@@ -32,10 +34,10 @@ end
 % bin_secre_recp = bits_recp(:,end-numBits+1:end); % recupero las últimas columnas que se modificaron
 % bin_secre_recp = reshape(bin_secre_recp',numel(bin_secre_recp),1)';
 
-bin_secre_recp = reshape(img_est',numel(img_est),1)';
-bin_secre_recp = bin_secre_recp(1:(imgSecretaF * imgSecretaC * 8)); %se eliminan los ceros que se agregaron anteriormente 
+%bin_secre_recp = reshape(bits_rx',numel(bits_rx),1)';
+bin_secre_recp = bits_rx(1:(imgSecretaF * imgSecretaC * 8)); %se eliminan los ceros que se agregaron anteriormente 
 bin_secre_recp =  reshape(bin_secre_recp, 8, [])';
-pixelesImagenSecreta = bi2de(bin_secre_recp, 'left-msb');
+pixelesImagenSecreta = bi2de(bin_secre_recp,'left-msb' );
 
 % Reconstruir la imagen secreta a partir de los píxeles extraídos
 img_secreta_extraida = reshape(pixelesImagenSecreta, imgSecretaF, imgSecretaC);

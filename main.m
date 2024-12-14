@@ -5,15 +5,26 @@ close all;
 % Directorio de las imágenes
 %directorio = '/Users/juanmanuelordonez/Documents/MATLAB/TESIS/v/imagenes';
 directorio = 'C:\Users\ANGEL\OneDrive\Escritorio\tesis\codigos matlab\imagenes';
-num_img = 8;
+num_img = 11;
 
 % Obtener la lista de archivos de imagen en la carpeta
 archivos = dir(fullfile(directorio, '*.jpg')); % Cambiar *.jpg por el tipo de imagen que desees procesar
 archivo_imagen = fullfile(directorio, archivos(num_img).name); % Comentar para varias
 archivo_imagen_msj = fullfile(directorio, archivos(13).name);
 
+matriz = zeros(64, 64);
+
+% Dividir la matriz en cuatro cuadrantes y asignar valores
+matriz(1:32, 1:32) = 0; % Primer cuadrante (arriba izquierda)
+matriz(1:32, 33:64) = 1; % Segundo cuadrante (arriba derecha)
+matriz(33:64, 1:32) = 2; % Tercer cuadrante (abajo izquierda)
+matriz(33:64, 33:64) = 3; % Cuarto cuadrante (abajo derecha)
+
+prueba = int2bit(matriz(:), 8, true);  % Convertir a binario
+prueba = reshape(prueba', [], 1)';   % Colapsar en un vector de bits
+
 % Definir el esquema de lifting wavelet
-lScheme = liftingScheme("Wavelet", "db4");
+lScheme = liftingScheme("Wavelet", "haar");
 
 % Asegurarnos de que haya archivos para procesar
 if isempty(archivos)
@@ -98,7 +109,7 @@ while residuo > 0
         if nlsb <= NLSB
             array_nlsb(cont) = nlsb;
             porIncrus = nlsb*(numel(vec_coef{cont}));
-            [wav_coef_mod] = incrustar_imagen_v5(wav_coef_mod, infSecre, subbanda, nlsb);
+            [wav_coef_mod, bitsincrus] = incrustar_imagen_v5(wav_coef_mod, infSecre, subbanda, nlsb);
                    
             disp("imagen secreta incrustada :)")
             residuo = residuo - porIncrus; %con esto saldría del ciclo while
@@ -106,7 +117,7 @@ while residuo > 0
             array_nlsb(cont) = NLSB;
             porIncrus = NLSB*(numel(vec_coef{cont}));
             incrus = infSecre(1:porIncrus); %porcentaje de la información secreta que se va a incrustar
-            [wav_coef_mod] = incrustar_imagen_v5(wav_coef_mod, incrus, subbanda, NLSB);
+            [wav_coef_mod, bitsincrus] = incrustar_imagen_v5(wav_coef_mod, incrus, subbanda, NLSB);
     
             infSecre = infSecre(porIncrus+1:end); %se descarta la información que ya se ha ocultado
             residuo = residuo - porIncrus; 
@@ -138,7 +149,8 @@ title("imagen estego")
 wav_coef_rx = descomponer(img_rec, archivos, num_img, lScheme, 3, map_n1, map_n2);
 
 % Extraer la imagen secreta
-img_msj_rx = extraer_imagen(wav_coef_rx, vec_sub, imgSecretaF, imgSecretaC, bits_img_msj, array_nlsb);
+[img_msj_rx, bits_rx] = extraer_imagen(wav_coef_rx, vec_sub, imgSecretaF, imgSecretaC, bits_img_msj, array_nlsb);
+a = isequal(bits_rx,bitsincrus)
 
 figure;
 % Mostrar la imagen secreta
