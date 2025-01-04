@@ -1,4 +1,4 @@
-function bp = best_parameter_en(ex)
+function bp = best_parameter_en(ex, modo)
 % Inicializar vectores para almacenar datos y etiquetas
 en = [];
 bp = [];
@@ -25,7 +25,16 @@ en = en';
 index = [1:length(en)];
 
 en = [en ; index];
-[~, indices] = sort(en(1, :), 'ascend');
+
+if modo == 0
+    [~, indices] = sort(en(1, :), 'descend');
+
+else
+    [~, indices] = sort(en(1, :), 'ascend');
+
+end
+
+
 
 % Reordenar ambas filas según los índices obtenidos
 bp = en(:, indices);

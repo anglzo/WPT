@@ -35,19 +35,11 @@ function [wav_coef_mod, bitsincrus] = incrustar_imagen_v5(wav_coef, infSecre, su
 
     %%  Proceso de incrustación
     total_info = nlsb*length(coefVector); % Información total que se va a modificar en los coeficientes
-    if nlsb == 4
+ 
+    add = total_info - cantidadBitsImagenSecreta; %si son iguales no modifica la longitd porque add es 0
+    bin_secre = [infSecre zeros(1,add)];
+    bin_secre = reshape(bin_secre,nlsb,length(bin_secre)/nlsb)';
 
-        bin_secre = [infSecre];
-        bin_secre = reshape(bin_secre,nlsb,length(bin_secre)/nlsb)';
-
-
-    else
-
-        add = total_info - cantidadBitsImagenSecreta; %si son iguales no modifica la longitd porque add es 0
-        bin_secre = [infSecre zeros(1,add)];
-        bin_secre = reshape(bin_secre,nlsb,length(bin_secre)/nlsb)';
-
-    end
     bitsincrus = bin_secre;
    
     coef_bin_stego = coef_bin;

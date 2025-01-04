@@ -1,0 +1,117 @@
+similitud imagen secreta origen y recepción (bior1.1):
+SSIM: 0.9886
+
+similitud imagen secreta origen y recepción (bior1.3):
+SSIM: 0.9858
+
+similitud imagen secreta origen y recepción (bior1.5):
+SSIM: 0.9835
+
+similitud imagen secreta origen y recepción (bior2.2):
+SSIM: 0.9935
+
+similitud imagen secreta origen y recepción (bior2.4):
+SSIM: 0.9934
+
+similitud imagen secreta origen y recepción (bior2.6):
+SSIM: 0.9925
+
+similitud imagen secreta origen y recepción (bior2.8):
+SSIM: 0.9895
+
+similitud imagen secreta origen y recepción (bior3.1):
+SSIM: 0.3566
+
+similitud imagen secreta origen y recepción (bior3.3):
+SSIM: 0.3630
+
+similitud imagen secreta origen y recepción (bior3.5):
+SSIM: 0.3544
+
+similitud imagen secreta origen y recepción (bior3.7):
+SSIM: 0.3477
+
+similitud imagen secreta origen y recepción (bior3.9):
+SSIM: 0.3488
+
+similitud imagen secreta origen y recepción (bior4.4):
+SSIM: 0.9782
+
+similitud imagen secreta origen y recepción (bior5.5):
+SSIM: 0.9007
+
+similitud imagen secreta origen y recepción (bior6.8):
+SSIM: 0.9315
+
+similitud imagen secreta origen y recepción (coif1):
+SSIM: 0.5688
+
+similitud imagen secreta origen y recepción (db2):
+SSIM: 0.5175
+
+similitud imagen secreta origen y recepción (db3):
+SSIM: 0.1589
+
+similitud imagen secreta origen y recepción (db4):
+SSIM: 0.9867
+
+similitud imagen secreta origen y recepción (db5):
+SSIM: 0.9849
+
+similitud imagen secreta origen y recepción (db6):
+SSIM: 0.3139
+
+similitud imagen secreta origen y recepción (db7):
+SSIM: 0.0629
+
+similitud imagen secreta origen y recepción (db8):
+SSIM: 0.2008
+
+similitud imagen secreta origen y recepción (haar):
+SSIM: 0.9886
+
+similitud imagen secreta origen y recepción (rbio1.1):
+SSIM: 0.9997
+
+similitud imagen secreta origen y recepción (rbio1.3):
+SSIM: 0.9941
+
+similitud imagen secreta origen y recepción (rbio1.5):
+SSIM: 0.9983
+
+similitud imagen secreta origen y recepción (rbio2.2):
+SSIM: 0.9841
+
+similitud imagen secreta origen y recepción (rbio2.4):
+SSIM: 0.9923
+
+similitud imagen secreta origen y recepción (rbio2.6):
+SSIM: 0.9916
+
+similitud imagen secreta origen y recepción (rbio2.8):
+SSIM: 0.9896
+
+similitud imagen secreta origen y recepción (rbio3.1):
+SSIM: 0.9978
+
+similitud imagen secreta origen y recepción (rbio3.3):
+SSIM: 0.9975
+
+similitud imagen secreta origen y recepción (rbio3.5):
+SSIM: 0.9426
+
+similitud imagen secreta origen y recepción (rbio3.7):
+SSIM: 0.9193
+
+similitud imagen secreta origen y recepción (rbio3.9):
+SSIM: 0.9152
+
+similitud imagen secreta origen y recepción (rbio4.4):
+SSIM: 0.9800
+
+similitud imagen secreta origen y recepción (rbio5.5):
+SSIM: 0.8895
+
+similitud imagen secreta origen y recepción (rbio6.8):
+SSIM: 0.9420
+

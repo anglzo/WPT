@@ -4,46 +4,37 @@ close all;
 
 % Directorio de las imágenes
 %directorio = '/Users/juanmanuelordonez/Documents/MATLAB/TESIS/v/imagenes';
-directorio = 'C:\Users\ANGEL\OneDrive\Escritorio\tesis\codigos matlab\imagenes';
-num_img = 11;
+directorio = 'C:\Users\ANGEL\OneDrive\Escritorio\tesis\codigos matlab\imagenes_portada_nuevas';
+num_img = 10;
 
 % Obtener la lista de archivos de imagen en la carpeta
 archivos = dir(fullfile(directorio, '*.jpg')); % Cambiar *.jpg por el tipo de imagen que desees procesar
 archivo_imagen = fullfile(directorio, archivos(num_img).name); % Comentar para varias
 archivo_imagen_msj = fullfile(directorio, archivos(13).name);
 
-matriz = zeros(64, 64);
-
-% Dividir la matriz en cuatro cuadrantes y asignar valores
-matriz(1:32, 1:32) = 0; % Primer cuadrante (arriba izquierda)
-matriz(1:32, 33:64) = 1; % Segundo cuadrante (arriba derecha)
-matriz(33:64, 1:32) = 2; % Tercer cuadrante (abajo izquierda)
-matriz(33:64, 33:64) = 3; % Cuarto cuadrante (abajo derecha)
-
-prueba = int2bit(matriz(:), 8, true);  % Convertir a binario
-prueba = reshape(prueba', [], 1)';   % Colapsar en un vector de bits
-
-% Definir el esquema de lifting wavelet
-lScheme = liftingScheme("Wavelet", "haar");
-
 % Asegurarnos de que haya archivos para procesar
 if isempty(archivos)
     error('No se encontraron archivos de imagen en el directorio especificado.');
 end
-
+%% imagen portada
 imagen = imread(archivo_imagen);
 imagen_gris = rgb2gray(imagen);
 img = double(imagen_gris);
+sz_img = numel(img);
 figure;
 imshow(uint8(img));
 title("imagen original");
 
+%% imagen secreta
 imagen_msj = imread(archivo_imagen_msj);
 imagen_gris_msj = rgb2gray(imagen_msj);
 img_msj = double(imagen_gris_msj);
 figure;
 imshow(uint8(img_msj));
 title("imagen secreta");
+
+%% Definir el esquema de lifting wavelet
+lScheme = liftingScheme("Wavelet", "haar");
 
 %% Descomposición inicial
 
@@ -52,19 +43,66 @@ mapa1 = [1 1 1 1];
 mapa2 = [1 1 1 1; 1 1 1 1; 1 1 1 1; 1 1 1 1];
 
 % Hacer la descomposición para n niveles de resolución
-[hz, std, wav_coef] = descomponer_imprimir(img, archivos, num_img, lScheme, 3, mapa1, mapa2);
+[Ce, C, M, Red, He, Reh, Hz, Ds, HzDs, wav_coef] = descomponer_parametros(img, archivos, num_img, lScheme, 3, mapa1, mapa2,sz_img);
 
-% Mostrar descomposición
-mostrar_imagen(wav_coef);
+%% Busqueda del mapa óptimo de acuerdo a la métrica seleccionada
 
-%% Poda de acuerdo a los parámetros de entropía z y std
+%seleccionar métrica 
+ opt = 8; % Ce índice de concentración de la energía
+% opt = 2; % C índice de compacidad
+% opt = 3; % M momentos estadísticos
+% opt = 4; % Red relación entre la energía y la dispersión
+% opt = 5; % He entropía energética
+% opt = 6; % Reh relación entre la energía y la entropía energética
+% opt = 7; % Hz entropía Z
+% opt = 8; % Ds desviación estandar
+% opt = 9; % Hz*Ds
+
+switch(opt)
+   case 1
+        metrica = Ce;
+        modo = 0; % 1 valores pequeños convenientes 
+                  % 0 valores grandes convenientes 
+   case 2
+        metrica = C;
+        modo = 1;
+   case 3
+        metrica = M;
+        modo = 1;
+   case 4
+        metrica = Red;
+        modo = 1;
+   case 5
+        metrica = He;
+        modo = 0;
+   case 6
+        metrica = Reh;
+        modo = 1;
+    case 7 
+        metrica = Hz;
+        modo = 0;
+    case 8
+        metrica = Ds;
+        modo = 0;
+    case 9
+        metrica = HzDs;
+        modo = 0;
+end
 
 % Mapa óptimo de descomposición
-[map_n1, map_n2] = calcular_mapa_optimo(hz, std, mapa1, mapa2);
+[mapa_optimo_nivel1,mapa_optimo_nivel2] = calcularMapa(metrica,modo)
 
-% Descomposición óptima
-[hz_opt, std_opt, wav_optimo] = descomponer_imprimir(img, archivos, num_img, lScheme, 3, map_n1, map_n2);
-bp = best_parameter(hz_opt, std_opt);
+%% Descomposición óptima de aceurdo a la métrica seleccionada
+
+[Ce_opt, C_opt, M_opt, Red_opt, He_opt, Reh_opt, Hz_opt, Ds_opt, HzDs_opt, wav_coef_opt] = descomponer_parametros(img, archivos, num_img, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2, sz_img);
+
+metrics = {Ce_opt, C_opt, M_opt, Red_opt, He_opt, Reh_opt, Hz_opt, Ds_opt, HzDs_opt, wav_coef_opt};
+metrica_opt = metrics{opt};
+
+% Mostrar descomposición
+mostrar_imagen(wav_coef_opt);
+
+bp = best_parameter_en(metrica_opt,modo); %organizar los parámetros de acuerdo al modo
 
 dimen = length(bp);
 
@@ -75,12 +113,12 @@ vec_coef = {};
 
 for i = 1:dimen
     isubbanda = bp(2,i);
-    subbanda = indices_sub(isubbanda,wav_optimo,map_n1,map_n2);
+    subbanda = indices_sub(isubbanda,wav_coef_opt,mapa_optimo_nivel1,mapa_optimo_nivel2);
     vec_sub{i} = subbanda;
-    vec_coef{i} = obtener_coeficiente(wav_optimo, vec_sub{i});
+    vec_coef{i} = obtener_coeficiente(wav_coef_opt, vec_sub{i});
 end
 
-NLSB = 2; % Número máximo de LSB que se pueden modificar
+NLSB = 4; % Número máximo de LSB que se pueden modificar
 bits_av = suma(vec_coef)* NLSB; % suma de bits disponibles para incustar
 numBitsCoef = 16; %se representan con 16 bits la información de la imagen portada
 
@@ -98,12 +136,12 @@ end
 cont = 0; % Contador
 bitsrest = 0;
 array_nlsb = zeros(1, dimen); % Vector para almacenar el número de LSB modificados en cada grupo de coeficientes
-wav_coef_mod = wav_optimo;
+wav_coef_mod = wav_coef_opt;
 while residuo > 0 
     cont = cont + 1;
     if  ~iscell(vec_coef{cont})
         isubbanda = bp(2, cont);
-        subbanda = indices_sub(isubbanda, wav_optimo, map_n1, map_n2);
+        subbanda = indices_sub(isubbanda, wav_coef_opt, mapa_optimo_nivel1, mapa_optimo_nivel2);
         nlsb = ceil((residuo)/(numel(vec_coef{cont}))); 
     
         if nlsb <= NLSB
@@ -136,7 +174,7 @@ else
 end
 
 % Reconstrucción de la imagen con la información incrustada
-img_rec = reconstruir_wavelet(wav_coef_mod, lScheme, 3, map_n1, map_n2);
+img_rec = reconstruir_wavelet(wav_coef_mod, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2);
 
 % Mostrar imagen reconstruida
 img_rec = uint8(img_rec);  % Convertir a formato de 8 bits si es necesario
@@ -146,11 +184,10 @@ title("imagen estego")
 
 %% Receptor
 % Descomponer la imagen stego (img_rec) en los coeficientes wavelet
-wav_coef_rx = descomponer(img_rec, archivos, num_img, lScheme, 3, map_n1, map_n2);
+wav_coef_rx = descomponer(img_rec, archivos, num_img, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2);
 
 % Extraer la imagen secreta
 [img_msj_rx, bits_rx] = extraer_imagen(wav_coef_rx, vec_sub, imgSecretaF, imgSecretaC, bits_img_msj, array_nlsb);
-a = isequal(bits_rx,bitsincrus)
 
 figure;
 % Mostrar la imagen secreta
