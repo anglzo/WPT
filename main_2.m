@@ -4,13 +4,14 @@ close all;
 
 % Directorio de las imágenes
 %directorio = '/Users/juanmanuelordonez/Documents/MATLAB/TESIS/v/imagenes';
-directorio = 'C:\Users\ANGEL\OneDrive\Escritorio\tesis\codigos matlab\imagenes_portada_nuevas';
-num_img = 10;
+%directorio = 'C:\Users\ANGEL\OneDrive\Escritorio\tesis\codigos matlab\imagenes_portada_nuevas';
+directorio = '/Users/angel/Downloads/imagenes_portada_nuevas'
+num_img =6;
 
 % Obtener la lista de archivos de imagen en la carpeta
 archivos = dir(fullfile(directorio, '*.jpg')); % Cambiar *.jpg por el tipo de imagen que desees procesar
 archivo_imagen = fullfile(directorio, archivos(num_img).name); % Comentar para varias
-archivo_imagen_msj = fullfile(directorio, archivos(13).name);
+archivo_imagen_msj = fullfile(directorio, archivos(12).name);
 
 % Asegurarnos de que haya archivos para procesar
 if isempty(archivos)
@@ -94,7 +95,7 @@ end
 
 %% Descomposición óptima de aceurdo a la métrica seleccionada
 
-[Ce_opt, C_opt, M_opt, Red_opt, He_opt, Reh_opt, Hz_opt, Ds_opt, HzDs_opt, wav_coef_opt] = descomponer_parametros(img, archivos, num_img, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2, sz_img);
+[Ce_opt, C_opt, M_opt, Red_opt, He_opt, Reh_opt, Hz_opt, Ds_opt, HzDs_opt, wav_coef_opt] = descomponer_parametros(img, archivos, num_img, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2, sz_img); %aqui
 
 metrics = {Ce_opt, C_opt, M_opt, Red_opt, He_opt, Reh_opt, Hz_opt, Ds_opt, HzDs_opt, wav_coef_opt};
 metrica_opt = metrics{opt};
@@ -113,7 +114,7 @@ vec_coef = {};
 
 for i = 1:dimen
     isubbanda = bp(2,i);
-    subbanda = indices_sub(isubbanda,wav_coef_opt,mapa_optimo_nivel1,mapa_optimo_nivel2);
+    subbanda = indices_sub(isubbanda,wav_coef_opt,mapa_optimo_nivel1,mapa_optimo_nivel2); %aqui
     vec_sub{i} = subbanda;
     vec_coef{i} = obtener_coeficiente(wav_coef_opt, vec_sub{i});
 end
@@ -141,7 +142,7 @@ while residuo > 0
     cont = cont + 1;
     if  ~iscell(vec_coef{cont})
         isubbanda = bp(2, cont);
-        subbanda = indices_sub(isubbanda, wav_coef_opt, mapa_optimo_nivel1, mapa_optimo_nivel2);
+        subbanda = indices_sub(isubbanda, wav_coef_opt, mapa_optimo_nivel1, mapa_optimo_nivel2); %aqui
         nlsb = ceil((residuo)/(numel(vec_coef{cont}))); 
     
         if nlsb <= NLSB
@@ -174,7 +175,7 @@ else
 end
 
 % Reconstrucción de la imagen con la información incrustada
-img_rec = reconstruir_wavelet(wav_coef_mod, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2);
+img_rec = reconstruir_wavelet(wav_coef_mod, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2); %aqui
 
 % Mostrar imagen reconstruida
 img_rec = uint8(img_rec);  % Convertir a formato de 8 bits si es necesario
@@ -184,7 +185,7 @@ title("imagen estego")
 
 %% Receptor
 % Descomponer la imagen stego (img_rec) en los coeficientes wavelet
-wav_coef_rx = descomponer(img_rec, archivos, num_img, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2);
+wav_coef_rx = descomponer(img_rec, archivos, num_img, lScheme, 3, mapa_optimo_nivel1, mapa_optimo_nivel2); %aqui
 
 % Extraer la imagen secreta
 [img_msj_rx, bits_rx] = extraer_imagen(wav_coef_rx, vec_sub, imgSecretaF, imgSecretaC, bits_img_msj, array_nlsb);
